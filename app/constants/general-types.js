@@ -1,0 +1,7 @@
+export const FETCH_IMAGES     = 'FETCH_IMAGES';
+export const FETCH_CATEGORIES = 'FETCH_CATEGORIES';
+
+export const ADD_IMAGE    = 'ADD_IMAGE';
+export const DELETE_IMAGE = 'DELETE_IMAGE';
+
+export const SET_CATEGORY = 'SET_CATEGORY';
