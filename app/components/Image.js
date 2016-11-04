@@ -6,16 +6,23 @@ class Image extends Component {
     super(props);
   }
 
+  componentDidMount() {
+    if(!this.props.link) {
+      this.props.getImageLink(this.props.path_display);
+    }
+  }
+
   handleDelete() {
-    this.props.onDelete(this.props.id);
+    const { onDelete, path_display } = this.props;
+    onDelete(path_display);
   }
 
   render() {
     return (
       <div className="gallery-item" style={{
-        backgroundImage    : `url(${this.props.url || ''})`,
+        backgroundImage    : `url(${this.props.link || ''})`,
       }}>
-        <button onClick={this.props.onDelete} className="gallery-item__delete">X</button>
+        <button onClick={this.handleDelete.bind(this)} className="gallery-item__delete">D</button>
       </div>
     ); 
   }
@@ -23,9 +30,11 @@ class Image extends Component {
 
 
 Image.propTypes = {
-  url      : PropTypes.string.isRequired,
-  id       : PropTypes.number.isRequired,
-  onDelete : PropTypes.func.isRequired
+  link           : PropTypes.string,
+  path_display   : PropTypes.string.isRequired,
+  id             : PropTypes.string.isRequired,
+  onDelete       : PropTypes.func.isRequired,
+  getImageLink   : PropTypes.func.isRequired
 };
 
 export default Image;

@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { fetchImages, addImage, deleteImage, fetchCategories, setCategory } from 'actions/general-actions';
+import { fetchImagesData, addImage, deleteImage, fetchCategories, setCategory, getImageByPath } from 'actions/general-actions';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
@@ -16,32 +16,41 @@ class Gallery extends Component {
   }
 
   componentDidMount() {
-    this.props.fetchImages();
+    this.props.fetchImagesData();
     this.props.fetchCategories();
   }
 
-  handleImageDelete(id) {
-    this.props.deleteImage(id);
+  handleImageDelete(path) {
+    this.props.deleteImage(path);
   }
 
   handleImageSubmit(file) {
-    this.props.addImage(file);
+    const { categories } = this.props;
+    let categoryId = categories.filter(cat => {
+      return cat.active;
+    })[0].id;
+    this.props.addImage(file, categoryId);
   }
 
   renderImages() {
     const { images, categories } = this.props;
+    let categoryId = categories.filter(cat => {
+      return cat.active;
+    });
+    categoryId = categoryId[0] ? categoryId[0].id : 0;
 
     if(images) {
-      return (image.map((image, index) => {
-        return (
-          <Image 
-            onDelete={ this.handleImageDelete } 
-            url={ image.base64 } 
-            id={ image.id } />
-        )
-      }))  
+      return (images.map((image, index) => {
+        if(categoryId === 0 || (image.category_id && image.category_id == categoryId))
+          return (
+            <Image 
+              key={ index }
+              onDelete={ this.handleImageDelete.bind(this) } 
+              getImageLink={ this.props.getImageByPath.bind(this) }
+              { ...image } />
+          );
+      }));
     }
-
     return null;
   }
 
@@ -52,11 +61,17 @@ class Gallery extends Component {
 
     return (categories.map(cat => {
       // TODO: here should find saved images for current category
+      let imagesQuantity = images.filter(image => cat.id.toString() === image.category_id).length;
       return (
         <button 
           key={cat.id} 
-          className={classnames({ 'is-active' : cat.active })}
-          onClick={() => { this.props.setCategory(cat.id) }}>{cat.name} (0)</button>
+          className={classnames({ 
+            'is-empty'  : !imagesQuantity,
+            'is-active' : cat.active,
+          })}
+          onClick={() => { this.props.setCategory(cat.id) }}>
+            {cat.name}{ imagesQuantity ? ' ('+imagesQuantity+')' : ''}
+          </button>
       );
     }));
 
@@ -75,7 +90,7 @@ class Gallery extends Component {
         <div className="gallery__body">
 
           <div className="gallery__images">
-            { /*this.renderImages()*/ }
+            { this.renderImages() }
           </div>
 
           <div className="gallery__upload">
@@ -92,7 +107,8 @@ class Gallery extends Component {
 }
 
 Gallery.propTypes = {
-  fetchImages     : PropTypes.func.isRequired,
+  fetchImagesData : PropTypes.func.isRequired,
+  getImageByPath  : PropTypes.func.isRequired,
   fetchCategories : PropTypes.func.isRequired,
   addImage        : PropTypes.func.isRequired,
   deleteImage     : PropTypes.func.isRequired,
@@ -105,5 +121,12 @@ Gallery.propTypes = {
 
 export default connect(
   ({ images, categories }) => ({ images, categories }),
-  (dispatch) => (bindActionCreators({ fetchImages, deleteImage, fetchCategories, setCategory, addImage }, dispatch))
+  (dispatch) => (bindActionCreators({ 
+    fetchImagesData, 
+    deleteImage, 
+    fetchCategories, 
+    setCategory, 
+    addImage, 
+    getImageByPath 
+  }, dispatch))
 )(Gallery);

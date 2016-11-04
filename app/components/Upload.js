@@ -18,6 +18,7 @@ class Upload extends Component {
     return (
       <label htmlFor="upload-action" className="gallery-upload">
         <input 
+          name={new Date().getTime()}
           onChange={this.handleAdd.bind(this)} 
           id="upload-action" type="file" 
           className="gallery-upload__input" />

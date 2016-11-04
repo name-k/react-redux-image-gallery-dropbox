@@ -72,7 +72,10 @@ injectGlobal`
   
   .gallery__images {
     display: flex;
+    flex-wrap: wrap;
     /* width: 100%; */
+    max-height: 400px;
+    overflow-y: auto;
     margin-left: -5px;
     margin-right: -5px;
   }
@@ -116,7 +119,7 @@ injectGlobal`
     background-position: 50% 50%;
     flex 0 0 auto;
     margin: 0 5px;
-    width: 33.3333%;
+    width: calc(33.3333% - 10px);
     background-color: #fafafa;
   }
     .gallery-item:not(:nth-last-child(-n+3)) {
