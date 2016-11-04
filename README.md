@@ -1,1 +1,1 @@
-Demo gallery with dropbox (storage via Dropbox API). Built with React.js and Redux based on http://reactboilerplate.com/. 
+Demo gallery with dropbox (storage via Dropbox API). Built with React.js and Redux based on http://reactboilerplate.com/.

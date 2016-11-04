@@ -44,7 +44,7 @@ class Gallery extends Component {
         if(categoryId === 0 || (image.category_id && image.category_id == categoryId))
           return (
             <Image 
-              key={ index }
+              key={ image.id }
               onDelete={ this.handleImageDelete.bind(this) } 
               getImageLink={ this.props.getImageByPath.bind(this) }
               { ...image } />
